@@ -15,6 +15,6 @@ RUN comfy model download --url https://huggingface.co/stabilityai/stable-diffusi
 WORKDIR /app
 COPY handler.py /app/handler.py
 
-
+ENTRYPOINT []
 CMD ["python3", "-u", "/app/handler.py"]
 
