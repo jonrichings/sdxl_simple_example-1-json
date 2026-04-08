@@ -1,0 +1,64 @@
+{
+  "ckpt_loader": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "v1-5-pruned-emaonly.safetensors"
+    }
+  },
+  "load_image": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "input.png"
+    }
+  },
+  "prompt_pos": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["ckpt_loader", 1],
+      "text": "make the sky red"
+    }
+  },
+  "prompt_neg": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["ckpt_loader", 1],
+      "text": "text, watermark, logo, blurry, low quality"
+    }
+  },
+  "vae_encode": {
+    "class_type": "VAEEncode",
+    "inputs": {
+      "pixels": ["load_image", 0],
+      "vae": ["ckpt_loader", 2]
+    }
+  },
+  "ksampler": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["ckpt_loader", 0],
+      "positive": ["prompt_pos", 0],
+      "negative": ["prompt_neg", 0],
+      "latent_image": ["vae_encode", 0],
+      "seed": 0,
+      "steps": 25,
+      "cfg": 7,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 0.3
+    }
+  },
+  "vae_decode": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["ksampler", 0],
+      "vae": ["ckpt_loader", 2]
+    }
+  },
+  "save_image": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["vae_decode", 0],
+      "filename_prefix": "out"
+    }
+  }
+}
