@@ -11,3 +11,6 @@ RUN comfy model download --url https://huggingface.co/stabilityai/stable-diffusi
 
 # copy all input data (like images or videos) into comfyui (uncomment and adjust if needed)
 # COPY input/ /comfyui/input/
+
+CMD ["python3", "-u", "/app/handler.py"]
+
